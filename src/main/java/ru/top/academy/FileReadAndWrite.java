@@ -22,7 +22,6 @@ public class FileReadAndWrite {
             if (!newFile.exists()) {
                 createNewFile(newFile);
             }
-
             writeInNewFile(fileReader, fileWriter);
         } catch (IOException e) {
         }
