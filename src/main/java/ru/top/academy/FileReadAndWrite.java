@@ -1,9 +1,6 @@
 package ru.top.academy;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,18 +13,16 @@ public class FileReadAndWrite {
         try (FileReader fileReader = new FileReader(file);
              FileWriter fileWriter = new FileWriter(newFile);) {
 
-            if (!file.exists()) {
-                createNewFile(file);
-            }
-            if (!newFile.exists()) {
-                createNewFile(newFile);
-            }
-
+            isFileExistsMethod(file);
+            isFileExistsMethod(newFile);
             writeInNewFile(fileReader, fileWriter);
+            createNewDirectory();
+            moveFileInNewDirectory();
+        } catch (FileNotFoundException e) {
+            System.err.println("Файл не найден");
         } catch (IOException e) {
+            throw new RuntimeException();
         }
-        createNewDirectory();
-        moveFileInNewDirectory();
     }
 
     private void moveFileInNewDirectory() {
@@ -58,7 +53,20 @@ public class FileReadAndWrite {
         }
     }
 
-    private static void createNewFile(File file) throws IOException {
-        file.createNewFile();
+    private void createNewFile(File file) {
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void isFileExistsMethod(File file) {
+        if (!file.exists()) {
+            createNewFile(file);
+        }
     }
 }
+
+
+
