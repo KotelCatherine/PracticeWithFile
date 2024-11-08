@@ -1,9 +1,6 @@
 package ru.top.academy;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,20 +11,24 @@ public class FileReadAndWrite {
 
     public FileReadAndWrite() {
         try (FileReader fileReader = new FileReader(file);
-             FileWriter fileWriter = new FileWriter(newFile);) {
+             FileWriter fileWriter = new FileWriter(newFile)) {
 
-            if (!file.exists()) {
-                createNewFile(file);
-            }
-            if (!newFile.exists()) {
-                createNewFile(newFile);
-            }
-
+            isFileExistsMethod(file);
+            isFileExistsMethod(newFile);
             writeInNewFile(fileReader, fileWriter);
-        } catch (IOException e) {
+        }catch (FileNotFoundException e){
+            System.err.println("File not found");
+        }catch (IOException e) {
+            throw new RuntimeException(e);
         }
         createNewDirectory();
         moveFileInNewDirectory();
+    }
+
+    private void isFileExistsMethod(File file) {
+        if (!file.exists()) {
+            createNewFile(file);
+        }
     }
 
     private void moveFileInNewDirectory() {
@@ -41,7 +42,6 @@ public class FileReadAndWrite {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private void createNewDirectory() {
@@ -58,7 +58,11 @@ public class FileReadAndWrite {
         }
     }
 
-    private static void createNewFile(File file) throws IOException {
-        file.createNewFile();
+    private static void createNewFile(File file) {
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
